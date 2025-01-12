@@ -70,11 +70,11 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001, clipnorm=1.0,
 model.summary()
 
 # training
-lr_scheduler = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6)
+lrScheduler = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6)
 model.fit(
   trainImages,
   epochs=100,
   validation_data=valImages,
   class_weight=weights,
-  callbacks=[lr_scheduler]
+  callbacks=[lrScheduler]
   )

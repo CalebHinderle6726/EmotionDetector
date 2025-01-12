@@ -59,9 +59,9 @@ class SinusoidalEmbedding(kerasLayer.Layer):
         self.sinusoidalEncodings = tf.convert_to_tensor(sinusoidalEncodings, dtype=tf.float32)
 
     def call(self, x):
-        sequence_len = tf.shape(x)[1]  # getting sequence length
-        pos_enc = self.sinusoidalEncodings[:sequence_len, :]
-        return x + pos_enc
+        sequenceLen = tf.shape(x)[1]  # getting sequence length
+        posEnc = self.sinusoidalEncodings[:sequenceLen, :]
+        return x + posEnc
     
 class ConTransformer(kerasLayer.Layer):
     def __init__(self, imageSize, patchSize, dim, depth, heads, mlpDim, dropout=0.0):
@@ -90,7 +90,7 @@ class ConTransformer(kerasLayer.Layer):
         patchCount = (imageSize // patchSize) ** 2
 
         # patch and sinusoidal positional embedding
-        self.patch_embedding = Sequential([
+        self.patchEmbedding = Sequential([
             Rearrange('b (h p1) (w p2) c -> b (h w) (p1 p2 c)', p1=patchSize, p2=patchSize),
             kerasLayer.Dense(units=dim)
         ], name='patch_embedding')
@@ -115,7 +115,7 @@ class ConTransformer(kerasLayer.Layer):
         x = kerasLayer.MaxPooling2D(pool_size=(2,2))(x)
 
         # embedding
-        x = self.patch_embedding(x)
+        x = self.patchEmbedding(x)
         x = self.sinEmbedding(x)
 
         # transformer
